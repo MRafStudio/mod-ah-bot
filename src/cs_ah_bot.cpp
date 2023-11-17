@@ -24,6 +24,7 @@ EndScriptData */
 
 #include "ScriptMgr.h"
 #include "Chat.h"
+#include "Player.h"
 #include "AuctionHouseBot.h"
 #include "Config.h"
 
@@ -49,6 +50,11 @@ public:
 
     static bool HandleAHBotOptionsCommand(ChatHandler* handler, const char*args)
     {
+        Player* player;
+        player = handler->getSelectedPlayer() ? handler->getSelectedPlayer() : handler->GetPlayer();
+        // enGB/ruRU
+        WorldSession* session = player->GetSession();
+
         uint32 ahMapID = 0;
         char* opt = strtok((char*)args, " ");
         char* ahMapIdStr = strtok(NULL, " ");
@@ -70,8 +76,19 @@ public:
 
         if (!opt)
         {
-            handler->PSendSysMessage("Syntax is: ahbotoptions $option $ahMapID (2, 6 or 7) $parameter");
-            handler->PSendSysMessage("Try ahbotoptions help to see a list of options.");
+            switch (session->GetSessionDbLocaleIndex())
+            {
+            case LOCALE_ruRU:
+            {
+                handler->PSendSysMessage("Синтаксис: ahbotoptions $option $ahMapID (2, 6 or 7) $parameter");
+                handler->PSendSysMessage("Попробуйте ahbotoptions help, чтобы увидеть список опций.");
+                break;
+            }
+            default:
+                handler->PSendSysMessage("Syntax is: ahbotoptions $option $ahMapID (2, 6 or 7) $parameter");
+                handler->PSendSysMessage("Try ahbotoptions help to see a list of options.");
+                break;
+            }
             return false;
         }
 
@@ -79,7 +96,17 @@ public:
 
         if (strncmp(opt, "help", l) == 0)
         {
-            handler->PSendSysMessage("AHBot commands:");
+            switch (session->GetSessionDbLocaleIndex())
+            {
+            case LOCALE_ruRU:
+            {
+                handler->PSendSysMessage("Команды AHBot:");
+                break;
+            }
+            default:
+                handler->PSendSysMessage("AHBot commands:");
+                break;
+            }
             handler->PSendSysMessage("ahexpire");
             handler->PSendSysMessage("minitems");
             handler->PSendSysMessage("maxitems");
@@ -100,7 +127,17 @@ public:
         {
             if (!ahMapIdStr)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions ahexpire $ahMapID (2, 6 or 7)");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions ahexpire $ahMapID (2, 6 or 7)");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions ahexpire $ahMapID (2, 6 or 7)");
+                    break;
+                }
                 return false;
             }
 
@@ -111,7 +148,17 @@ public:
             char* param1 = strtok(NULL, " ");
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minitems $ahMapID (2, 6 or 7) $minItems");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions minitems $ahMapID (2, 6 or 7) $minItems");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions minitems $ahMapID (2, 6 or 7) $minItems");
+                    break;
+                }
                 return false;
             }
 
@@ -122,7 +169,17 @@ public:
             char* param1 = strtok(NULL, " ");
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxitems $ahMapID (2, 6 or 7) $maxItems");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions maxitems $ahMapID (2, 6 or 7) $maxItems");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions maxitems $ahMapID (2, 6 or 7) $maxItems");
+                    break;
+                }
                 return false;
             }
 
@@ -130,7 +187,17 @@ public:
         }
         else if (strncmp(opt, "mintime", l) == 0)
         {
-            handler->PSendSysMessage("ahbotoptions mintime has been deprecated");
+            switch (session->GetSessionDbLocaleIndex())
+            {
+            case LOCALE_ruRU:
+            {
+                handler->PSendSysMessage("Команда ahbotoptions mintime устарела");
+                break;
+            }
+            default:
+                handler->PSendSysMessage("ahbotoptions mintime has been deprecated");
+                break;
+            }
             return false;
             /*
             char* param1 = strtok(NULL, " ");
@@ -145,7 +212,17 @@ public:
         }
         else if (strncmp(opt, "maxtime", l) == 0)
         {
-            handler->PSendSysMessage("ahbotoptions maxtime has been deprecated");
+            switch (session->GetSessionDbLocaleIndex())
+            {
+            case LOCALE_ruRU:
+            {
+                handler->PSendSysMessage("Команда ahbotoptions maxtime устарела");
+                break;
+            }
+            default:
+                handler->PSendSysMessage("ahbotoptions maxtime has been deprecated");
+                break;
+            }
             return false;
             /*
             char* param1 = strtok(NULL, " ");
@@ -177,11 +254,25 @@ public:
 
             if (!ahMapIdStr || !param14)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions percentages $ahMapID (2, 6 or 7) $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
-                handler->PSendSysMessage("1 GreyTradeGoods 2 WhiteTradeGoods 3 GreenTradeGoods 4 BlueTradeGoods 5 PurpleTradeGoods");
-                handler->PSendSysMessage("6 OrangeTradeGoods 7 YellowTradeGoods 8 GreyItems 9 WhiteItems 10 GreenItems 11 BlueItems");
-                handler->PSendSysMessage("12 PurpleItems 13 OrangeItems 14 YellowItems");
-                handler->PSendSysMessage("The total must add up to 100%%");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions percentages $ahMapID (2, 6 или 7) $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
+                    handler->PSendSysMessage("1 Серый шмот 2 Белый шмот 3 Зеленый шмот 4 Синиц шмот 5 Фиолетовый шмот");
+                    handler->PSendSysMessage("6 Оранжевый шмот 7 Желтый шмот 8 Серые предметы 9 Белые предметы 10 Зеленые предметы 11 Синие предметы");
+                    handler->PSendSysMessage("12 Фиолетовые предметы 13 Оранжевые предметы 14 Желтые предметы");
+                    handler->PSendSysMessage("Общая сумма должна составлять 100%%");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions percentages $ahMapID (2, 6 or 7) $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
+                    handler->PSendSysMessage("1 GreyTradeGoods 2 WhiteTradeGoods 3 GreenTradeGoods 4 BlueTradeGoods 5 PurpleTradeGoods");
+                    handler->PSendSysMessage("6 OrangeTradeGoods 7 YellowTradeGoods 8 GreyItems 9 WhiteItems 10 GreenItems 11 BlueItems");
+                    handler->PSendSysMessage("12 PurpleItems 13 OrangeItems 14 YellowItems");
+                    handler->PSendSysMessage("The total must add up to 100%%");
+                    break;
+                }
                 return false;
             }
 
@@ -203,11 +294,25 @@ public:
 
             if (totalPercent == 0 || totalPercent != 100)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions percentages $ahMapID (2, 6 or 7) $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
-                handler->PSendSysMessage("1 GreyTradeGoods 2 WhiteTradeGoods 3 GreenTradeGoods 4 BlueTradeGoods 5 PurpleTradeGoods");
-                handler->PSendSysMessage("6 OrangeTradeGoods 7 YellowTradeGoods 8 GreyItems 9 WhiteItems 10 GreenItems 11 BlueItems");
-                handler->PSendSysMessage("12 PurpleItems 13 OrangeItems 14 YellowItems");
-                handler->PSendSysMessage("The total must add up to 100%%");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions percentages $ahMapID (2, 6 или 7) $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
+                    handler->PSendSysMessage("1 Серый шмот 2 Белый шмот 3 Зеленый шмот 4 Синиц шмот 5 Фиолетовый шмот");
+                    handler->PSendSysMessage("6 Оранжевый шмот 7 Желтый шмот 8 Серые предметы 9 Белые предметы 10 Зеленые предметы 11 Синие предметы");
+                    handler->PSendSysMessage("12 Фиолетовые предметы 13 Оранжевые предметы 14 Желтые предметы");
+                    handler->PSendSysMessage("Общая сумма должна составлять 100%%");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions percentages $ahMapID (2, 6 or 7) $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
+                    handler->PSendSysMessage("1 GreyTradeGoods 2 WhiteTradeGoods 3 GreenTradeGoods 4 BlueTradeGoods 5 PurpleTradeGoods");
+                    handler->PSendSysMessage("6 OrangeTradeGoods 7 YellowTradeGoods 8 GreyItems 9 WhiteItems 10 GreenItems 11 BlueItems");
+                    handler->PSendSysMessage("12 PurpleItems 13 OrangeItems 14 YellowItems");
+                    handler->PSendSysMessage("The total must add up to 100%%");
+                    break;
+                }
                 return false;
             }
 
@@ -249,7 +354,17 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions minprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions minprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
 
@@ -269,7 +384,17 @@ public:
                 auctionbot->Commands(6, ahMapID, AHB_YELLOW, param2);
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions minprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions minprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
         }
@@ -279,7 +404,17 @@ public:
             char* param2 = strtok(NULL, " ");
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions maxprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions maxprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
             if (strncmp(param1, "grey", l) == 0)
@@ -298,7 +433,17 @@ public:
                 auctionbot->Commands(7, ahMapID, AHB_YELLOW, param2);
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions maxprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions maxprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
         }
@@ -309,14 +454,34 @@ public:
 
             if (!ahMapIdStr || !param2 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions minbidprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions minbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
 
             uint32 minBidPrice = uint32(strtoul(param2, NULL, 0));
             if (minBidPrice < 1 || minBidPrice > 100)
             {
-                handler->PSendSysMessage("The min bid price multiplier must be between 1 and 100");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Минимальный множитель цены ставки должен находиться в диапазоне от 1 до 100.");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("The min bid price multiplier must be between 1 and 100");
+                    break;
+                }
                 return false;
             }
 
@@ -336,7 +501,17 @@ public:
                 auctionbot->Commands(8, ahMapID, AHB_YELLOW, param2);
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions minbidprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions minbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
         }
@@ -347,14 +522,34 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions maxbidprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions maxbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
 
             uint32 maxBidPrice = uint32(strtoul(param2, NULL, 0));
             if (maxBidPrice < 1 || maxBidPrice > 100)
             {
-                handler->PSendSysMessage("The max bid price multiplier must be between 1 and 100");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Максимальный множитель цены ставки должен находиться в диапазоне от 1 до 100.");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("The max bid price multiplier must be between 1 and 100");
+                    break;
+                }
                 return false;
             }
 
@@ -374,7 +569,17 @@ public:
                 auctionbot->Commands(9, ahMapID, AHB_YELLOW, param2);
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions max bidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions max bidprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions max bidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                    break;
+                }
                 return false;
             }
         }
@@ -385,7 +590,17 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxstack $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $value");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions maxstack $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $value");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions maxstack $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $value");
+                    break;
+                }
                 return false;
             }
 
@@ -412,7 +627,17 @@ public:
                 auctionbot->Commands(10, ahMapID, AHB_YELLOW, param2);
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxstack $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $value");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions maxstack $ahMapID (2, 6 или 7) $color (grey, white, green, blue, purple, orange или yellow) $value");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions maxstack $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $value");
+                    break;
+                }
                 return false;
             }
         }
@@ -423,7 +648,17 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions buyerprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue or purple) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions buyerprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue или purple) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions buyerprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue or purple) $price");
+                    break;
+                }
                 return false;
             }
 
@@ -443,7 +678,17 @@ public:
                 auctionbot->Commands(11, ahMapID, AHB_YELLOW, param2);
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions buyerprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue or purple) $price");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions buyerprice $ahMapID (2, 6 или 7) $color (grey, white, green, blue или purple) $price");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions buyerprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue or purple) $price");
+                    break;
+                }
                 return false;
             }
         }
@@ -453,7 +698,17 @@ public:
 
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions bidinterval $ahMapID (2, 6 or 7) $interval(in minutes)");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions bidinterval $ahMapID (2, 6 или 7) $interval(в минутах)");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions bidinterval $ahMapID (2, 6 or 7) $interval(in minutes)");
+                    break;
+                }
                 return false;
             }
 
@@ -465,7 +720,17 @@ public:
 
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions bidsperinterval $ahMapID (2, 6 or 7) $bids");
+                switch (session->GetSessionDbLocaleIndex())
+                {
+                case LOCALE_ruRU:
+                {
+                    handler->PSendSysMessage("Синтаксис: ahbotoptions bidsperinterval $ahMapID (2, 6 или 7) $bids");
+                    break;
+                }
+                default:
+                    handler->PSendSysMessage("Syntax is: ahbotoptions bidsperinterval $ahMapID (2, 6 or 7) $bids");
+                    break;
+                }
                 return false;
             }
 
@@ -473,8 +738,19 @@ public:
         }
         else
         {
-            handler->PSendSysMessage("Syntax is: ahbotoptions $option $ahMapID (2, 6 or 7) $parameter");
-            handler->PSendSysMessage("Try ahbotoptions help to see a list of options.");
+            switch (session->GetSessionDbLocaleIndex())
+            {
+            case LOCALE_ruRU:
+            {
+                handler->PSendSysMessage("Синтаксис: ahbotoptions $option $ahMapID (2, 6 или 7) $parameter");
+                handler->PSendSysMessage("Попробуйте ahbotoptions help, чтобы увидеть список опций.");
+                break;
+            }
+            default:
+                handler->PSendSysMessage("Syntax is: ahbotoptions $option $ahMapID (2, 6 or 7) $parameter");
+                handler->PSendSysMessage("Try ahbotoptions help to see a list of options.");
+                break;
+            }
             return false;
         }
 
